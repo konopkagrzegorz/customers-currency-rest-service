@@ -18,13 +18,14 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class CurrencyControllerTest {
 
-    public static final String NAME = "Jim";
+    public static final String NAME = "PLN";
 
     @Mock
     CurrencyService currencyService;
@@ -41,14 +42,12 @@ public class CurrencyControllerTest {
     }
 
     @Test
-    public void printAllCurrency() throws Exception {
+    public void getAllCurrencyTest() throws Exception {
         //given
         CurrencyDTO currencyDTO1 = new CurrencyDTO();
-        currencyDTO1.setId(1L);
         currencyDTO1.setName("PLN");
 
         CurrencyDTO currencyDTO2 = new CurrencyDTO();
-        currencyDTO2.setId(2L);
         currencyDTO2.setName("EUR");
 
         List<CurrencyDTO> categories = new ArrayList<>();
@@ -60,20 +59,33 @@ public class CurrencyControllerTest {
         mockMvc.perform(get("/api/currency")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.currency", hasSize(2)));
+                .andExpect(jsonPath("$[*]", hasSize(2)));
     }
 
     @Test
-    public void printCategoryByName() throws Exception {
-        CurrencyDTO category1 = new CurrencyDTO();
-        category1.setId(1l);
-        category1.setName(NAME);
-
-        when(currencyService.getCurrencyByName(anyString())).thenReturn(category1);
-
-        mockMvc.perform(get("/api/categories/Jim")
+    public void getCurrencyByNameTest() throws Exception {
+        //given
+        CurrencyDTO currencyDTO = new CurrencyDTO();
+        currencyDTO.setName(NAME);
+        //when
+        when(currencyService.getCurrencyByName(anyString())).thenReturn(currencyDTO);
+        //then
+        mockMvc.perform(get("/api/currency/" + NAME)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(NAME)));
+    }
+
+    @Test
+    public void deleteCurrency() throws Exception {
+        //given
+        CurrencyDTO currencyDTO = new CurrencyDTO();
+        currencyDTO.setName(NAME);
+        //when;
+        when(currencyService.save(currencyDTO)).thenReturn(currencyDTO);
+        //then
+        mockMvc.perform(delete("/api/currency/delete/" + NAME)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }
