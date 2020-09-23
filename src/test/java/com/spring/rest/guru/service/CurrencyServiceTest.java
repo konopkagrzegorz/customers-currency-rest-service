@@ -1,7 +1,7 @@
 package com.spring.rest.guru.service;
 
 import com.spring.rest.guru.domain.Currency;
-import com.spring.rest.guru.mapper.CategoryMapper;
+import com.spring.rest.guru.mapper.CurrencyMapper;
 import com.spring.rest.guru.model.CurrencyDTO;
 import com.spring.rest.guru.repository.CurrencyRepository;
 import org.junit.Before;
@@ -29,7 +29,7 @@ public class CurrencyServiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        currencyService = new CurrencyServiceImpl(CategoryMapper.INSTANCE, currencyRepository);
+        currencyService = new CurrencyServiceImpl(CurrencyMapper.INSTANCE, currencyRepository);
     }
 
     @Test
@@ -38,7 +38,7 @@ public class CurrencyServiceTest {
         List<Currency> categories = Arrays.asList(new Currency(), new Currency(), new Currency());
         when(currencyRepository.findAll()).thenReturn(categories);
         //when
-        List<CurrencyDTO> currencyDTOS = currencyService.getAllCategories();
+        List<CurrencyDTO> currencyDTOS = currencyService.getAllCurrency();
         //then
         assertEquals(3, currencyDTOS.size());
     }
@@ -51,7 +51,7 @@ public class CurrencyServiceTest {
         currency.setName(NAME);
         when(currencyRepository.findByName(anyString())).thenReturn(currency);
         //when
-        CurrencyDTO currencyDTO = currencyService.getCategoryByName(NAME);
+        CurrencyDTO currencyDTO = currencyService.getCurrencyByName(NAME);
         //then
         assertEquals(ID, currencyDTO.getId());
         assertEquals(NAME, currencyDTO.getName());

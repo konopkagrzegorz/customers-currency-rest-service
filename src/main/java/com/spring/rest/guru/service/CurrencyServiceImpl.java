@@ -1,7 +1,7 @@
 package com.spring.rest.guru.service;
 
 import com.spring.rest.guru.domain.Currency;
-import com.spring.rest.guru.mapper.CategoryMapper;
+import com.spring.rest.guru.mapper.CurrencyMapper;
 import com.spring.rest.guru.model.CurrencyDTO;
 import com.spring.rest.guru.repository.CurrencyRepository;
 import org.springframework.stereotype.Service;
@@ -12,27 +12,41 @@ import java.util.stream.Collectors;
 @Service
 public class CurrencyServiceImpl implements CurrencyService {
 
-    private final CategoryMapper categoryMapper;
+    private final CurrencyMapper currencyMapper;
 
     private final CurrencyRepository currencyRepository;
 
-    public CurrencyServiceImpl(CategoryMapper categoryMapper, CurrencyRepository currencyRepository) {
-        this.categoryMapper = categoryMapper;
+    public CurrencyServiceImpl(CurrencyMapper currencyMapper, CurrencyRepository currencyRepository) {
+        this.currencyMapper = currencyMapper;
         this.currencyRepository = currencyRepository;
     }
 
     @Override
-    public List<CurrencyDTO> getAllCategories() {
+    public List<CurrencyDTO> getAllCurrency() {
         List<Currency> categories = currencyRepository.findAll();
         return categories.stream().map(category -> {
-            CurrencyDTO currencyDTO = categoryMapper.categoryToCategoryDTO(category);
+            CurrencyDTO currencyDTO = currencyMapper.currencyToCurrencyDTO(category);
             return currencyDTO;
         }).collect(Collectors.toList());
     }
 
     @Override
-    public CurrencyDTO getCategoryByName(String name) {
+    public CurrencyDTO getCurrencyByName(String name) {
         Currency currency = currencyRepository.findByName(name);
-        return categoryMapper.categoryToCategoryDTO(currency);
+        return currencyMapper.currencyToCurrencyDTO(currency);
+    }
+
+    @Override
+    public CurrencyDTO save(CurrencyDTO currencyDTO) {
+        Currency currency = currencyMapper.currencyDTOToCurrency(currencyDTO);
+        Currency saved = currencyRepository.save(currency);
+        CurrencyDTO returnedCurrencyDTO = currencyMapper.currencyToCurrencyDTO(saved);
+        return returnedCurrencyDTO;
+    }
+
+    @Override
+    public void deleteCurrency(String  name)  {
+        Currency currency = currencyRepository.findByName(name);
+        currencyRepository.deleteById(currency.getId());
     }
 }

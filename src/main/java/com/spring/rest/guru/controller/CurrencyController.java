@@ -16,12 +16,17 @@ public class CurrencyController {
         this.currencyService = currencyService;
     }
     @GetMapping("/currency")
-    public List<CurrencyDTO> printAllCustomers() {
-        return currencyService.getAllCategories();
+    public List<CurrencyDTO> getAllCustomers() {
+        return currencyService.getAllCurrency();
     }
 
     @GetMapping("/currency/{name}")
-    public CurrencyDTO printCategoryByName(@PathVariable String name) {
-        return currencyService.getCategoryByName(name);
+    public CurrencyDTO getCurrencyByName(@PathVariable String name) {
+        return currencyService.getCurrencyByName(name);
+    }
+
+    @DeleteMapping("/currency/delete/{name}")
+    public void deleteCurrency(@PathVariable String name) {
+        currencyService.deleteCurrency(name);
     }
 }

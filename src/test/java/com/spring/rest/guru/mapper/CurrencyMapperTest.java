@@ -11,7 +11,7 @@ public class CurrencyMapperTest {
     public static final String NAME = "Joe";
     public static final long ID = 1L;
 
-    CategoryMapper categoryMapper = CategoryMapper.INSTANCE;
+    CurrencyMapper currencyMapper = CurrencyMapper.INSTANCE;
 
     @Test
     public void categoryToCategoryDTO() throws Exception {
@@ -22,7 +22,7 @@ public class CurrencyMapperTest {
         currency.setId(ID);
 
         //when
-        CurrencyDTO currencyDTO = categoryMapper.categoryToCategoryDTO(currency);
+        CurrencyDTO currencyDTO = currencyMapper.currencyToCurrencyDTO(currency);
 
         //then
         assertEquals(Long.valueOf(ID), currencyDTO.getId());

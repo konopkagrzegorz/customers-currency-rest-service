@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface CurrencyService {
 
-    List<CurrencyDTO> getAllCategories();
-    CurrencyDTO getCategoryByName(String name);
+    List<CurrencyDTO> getAllCurrency();
+    CurrencyDTO getCurrencyByName(String name);
+    CurrencyDTO save(CurrencyDTO currencyDTO);
+    void deleteCurrency(String name);
 }

@@ -41,26 +41,26 @@ public class CurrencyControllerTest {
     }
 
     @Test
-    public void printAllCustomers() throws Exception {
+    public void printAllCurrency() throws Exception {
         //given
         CurrencyDTO currencyDTO1 = new CurrencyDTO();
         currencyDTO1.setId(1L);
-        currencyDTO1.setName("Junky");
+        currencyDTO1.setName("PLN");
 
         CurrencyDTO currencyDTO2 = new CurrencyDTO();
         currencyDTO2.setId(2L);
-        currencyDTO2.setName("Fresh");
+        currencyDTO2.setName("EUR");
 
         List<CurrencyDTO> categories = new ArrayList<>();
         categories.add(currencyDTO1);
         categories.add(currencyDTO2);
         //when
-        when(currencyService.getAllCategories()).thenReturn(categories);
+        when(currencyService.getAllCurrency()).thenReturn(categories);
         //then
-        mockMvc.perform(get("/api/categories")
+        mockMvc.perform(get("/api/currency")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.categories", hasSize(2)));
+                .andExpect(jsonPath("$.currency", hasSize(2)));
     }
 
     @Test
@@ -69,7 +69,7 @@ public class CurrencyControllerTest {
         category1.setId(1l);
         category1.setName(NAME);
 
-        when(currencyService.getCategoryByName(anyString())).thenReturn(category1);
+        when(currencyService.getCurrencyByName(anyString())).thenReturn(category1);
 
         mockMvc.perform(get("/api/categories/Jim")
                 .contentType(MediaType.APPLICATION_JSON))
