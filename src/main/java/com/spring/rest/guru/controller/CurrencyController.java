@@ -25,6 +25,11 @@ public class CurrencyController {
         return currencyService.getCurrencyByName(name);
     }
 
+    @PostMapping("/currency/add-new")
+    public CurrencyDTO addNewCurrency(@RequestBody CurrencyDTO currencyDTO) {
+        return currencyService.save(currencyDTO);
+    }
+
     @DeleteMapping("/currency/delete/{name}")
     public void deleteCurrency(@PathVariable String name) {
         currencyService.deleteCurrency(name);

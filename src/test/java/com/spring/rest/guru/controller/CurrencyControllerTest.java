@@ -1,25 +1,25 @@
 package com.spring.rest.guru.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.rest.guru.model.CurrencyDTO;
 import com.spring.rest.guru.service.CurrencyService;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import javax.print.attribute.standard.MediaSize;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,6 +34,8 @@ public class CurrencyControllerTest {
     CurrencyController currencyController;
 
     MockMvc mockMvc;
+
+    private static ObjectMapper mapper = new ObjectMapper();
 
     @Before
     public void setUp() throws Exception {
@@ -74,6 +76,22 @@ public class CurrencyControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(NAME)));
+    }
+
+    @Test
+    public void addNewCurrencyTest() throws Exception {
+        //given
+        CurrencyDTO currencyDTO = new CurrencyDTO();
+        currencyDTO.setName(NAME);
+        //when
+        when(currencyService.save(ArgumentMatchers.any())).thenReturn(currencyDTO);
+        String json = mapper.writeValueAsString(currencyDTO);
+        //then
+        mockMvc.perform(post("/api/currency/add-new")
+                .contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(NAME)));
+
     }
 
     @Test

@@ -17,12 +17,12 @@ public class CustomerController {
     }
 
     @GetMapping("/customers")
-    public List<CustomerDTO> printAllCustomers() {
+    public List<CustomerDTO> getAllCustomers() {
         return customerService.getAllCustomers();
     }
 
     @GetMapping("/customers/{id}")
-    public CustomerDTO printCustomerById(@PathVariable Long id) {
+    public CustomerDTO getCustomerById(@PathVariable Long id) {
         return customerService.getCustomerById(id);
     }
 
