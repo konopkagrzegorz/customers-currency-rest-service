@@ -1,9 +1,12 @@
 package com.spring.rest.guru.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.rest.guru.model.CurrencyDTO;
 import com.spring.rest.guru.model.CustomerDTO;
 import com.spring.rest.guru.service.CustomerService;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -18,7 +21,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,6 +33,8 @@ public class CustomerControllerTest {
 
     private static final String FIRST_NAME2 = "Cezary";
     private static final String LAST_NAME2 = "Zak";
+
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     @Mock
     CustomerService customerService;
@@ -85,14 +90,52 @@ public class CustomerControllerTest {
     }
 
     @Test
-    public void saveCustomer() {
+    public void saveCustomer() throws Exception {
+        //given
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName(FIRST_NAME);
+        customerDTO.setLastName(LAST_NAME);
+        //when
+        when(customerService.save(ArgumentMatchers.any(CustomerDTO.class))).thenReturn(customerDTO);
+        String json = mapper.writeValueAsString(customerDTO);
+        //then
+        mockMvc.perform(post("/api/customers/add-new")
+                .contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName", equalTo(FIRST_NAME)))
+                .andExpect(jsonPath("$.lastName", equalTo(LAST_NAME)));
     }
 
     @Test
-    public void updateCustomer() {
+    public void updateCustomer() throws Exception {
+        //given
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName(FIRST_NAME);
+        customerDTO.setLastName(LAST_NAME);
+        //when
+        when(customerService.save(customerDTO)).thenReturn(customerDTO);
+        customerDTO.setLastName(LAST_NAME2);
+        when(customerService.save(customerDTO)).thenReturn(customerDTO);
+        String json = mapper.writeValueAsString(customerDTO);
+        //then
+        mockMvc.perform(put("/api/customers/update/" + ID)
+                .contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName", equalTo(FIRST_NAME)))
+                .andExpect(jsonPath("$.lastName", equalTo(LAST_NAME2)));
     }
 
     @Test
-    public void deleteCustomer() {
+    public void deleteCustomer() throws Exception {
+        //given
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName(FIRST_NAME);
+        customerDTO.setLastName(LAST_NAME);
+        //when;
+        when(customerService.save(customerDTO)).thenReturn(customerDTO);
+        //then
+        mockMvc.perform(delete("/api/customers/delete/" + ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }
